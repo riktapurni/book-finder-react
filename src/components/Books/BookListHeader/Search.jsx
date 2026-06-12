@@ -1,15 +1,33 @@
 import React from 'react'
 import { useState } from "react";
+import { useDebounce } from '../../../hooks/useDebounce';
 
-const Search = ({bookName, setBookName }) => {
-  const [searchTerm, setSearchTerm] = useState(" ");
-    const handleSubmit = (e) => {
-      e.preventDefault()
-      setBookName(searchTerm)
-      setSearchTerm("")
+const Search = ({searchTerm, setSearchTerm }) => {
+  const [inputValue, setInputValue] = useState("")
+//   inputValue changes immediately → smooth typing.
+// searchTerm changes after 1 second → filtering runs once.
+  // if search button is clicked then search result will be shown 
+    // const handleSubmit = (e) => {
+    //   e.preventDefault()
+    //   // setBookName(searchTerm)
+    //   setSearchTerm("")
+    // }
+    // debounced serach handler
+  const debouncedSearch = useDebounce((value) => {
+    console.log("🔍 Debounced search executed:", value);
+    setSearchTerm(value);
+  }, 1000);
+
+    const handleSearchChange = (e) => {
+const value = e.target.value
+// instant UI update 
+setInputValue(value)
+// delayed search //runs only once after the user stops typing for 1 second.
+debouncedSearch(value)
     }
   return (
-    <form onSubmit={handleSubmit}>
+     <form >
+       {/* //onSubmit={handleSubmit} */}
     <div className="flex">
       <div
         className="relative w-full overflow-hidden rounded-lg border-2 border-[#1C4336] text-[#1C4336] md:min-w-[380px] lg:min-w-[440px]"
@@ -17,8 +35,9 @@ const Search = ({bookName, setBookName }) => {
         <input
           type="search"
           id="search-dropdown"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          value={inputValue}
+          // onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={handleSearchChange}
           className="z-20 block w-full bg-white px-4 py-2.5 pr-10 text-[#1C4336] placeholder:text-[#1C4336] focus:outline-none"
           placeholder="Search Book"
           required
@@ -47,8 +66,8 @@ const Search = ({bookName, setBookName }) => {
             <span >Search</span>
           </button>
           {
-            bookName !== "" && (
-              <button onClick= {()=> setBookName("")} className="me-2">Reset</button>
+            searchTerm !== "" && (
+              <button onClick= {()=> setSearchTerm("")} className="me-2">Reset</button>
             )
           }
         </div>

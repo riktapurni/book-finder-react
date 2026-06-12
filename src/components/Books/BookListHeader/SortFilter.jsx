@@ -1,6 +1,6 @@
 import React from 'react'
 
-const SortFilter = ({handleSort, sortBy}) => {
+const SortFilter = ({handleSort, sortBy, setSortBy}) => {
   return (
     <div className="flex items-stretch space-x-3">
             {/* <!-- Sort --> */}
@@ -9,6 +9,8 @@ const SortFilter = ({handleSort, sortBy}) => {
               name="sortBy"
               id="sortBy"
               value={sortBy}
+              // onChange={(e) => setSortBy(e.target.value)}
+              // best in this case▌
               onChange={(e) => handleSort(e.target.value)}
             >
               <option value="">Sort</option>
